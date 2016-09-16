@@ -1,0 +1,46 @@
+
+
+body{
+	color: #7F7F7F;
+	font-family: 'Oswald', sans-serif;
+	background-color: #585858;
+}
+
+th.sorting {
+	border: none; !important;
+	color: #FFFFFF;
+}
+
+
+td {
+	font-size: 150%;
+	vertical-align: middle;
+}
+
+tr {
+	height: 40px;
+}
+
+#ChartContainer {
+	margin-left: 10%;
+	margin-right: 10%;
+}
+
+
+table.dataTable thead .sorting:after {
+	opacity: .6;
+    content: "\e150";
+    color: #FFFFFF;
+}
+
+table.dataTable thead .sorting_asc:after {
+	opacity: .6;
+    content: "\e155";
+    color: #FFFFFF;
+}
+
+table.dataTable thead .sorting_desc:after {
+	opacity: .6;
+    content: "\e156";
+    color: #FFFFFF;
+}

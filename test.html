@@ -1,0 +1,117 @@
+<! DOCTYPE html>
+<html>
+<head>
+	<link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" type="text/css" href="datatables.min.css"/>
+	<link rel="stylesheet" type="text/css" href="Bootstrap-3.3.6/css/bootstrap-theme.min.css"/>
+	<link rel="stylesheet" type="text/css" href="Bootstrap-3.3.6/css/bootstrap.css"/>
+	<link rel="stylesheet" type="text/css" href="test.css"/>
+</head>
+<body>
+
+<div align="center" id="ChartContainer">
+	
+<table id="example" class="table " cellspacing="0" width="100%"></table>
+</div>
+	
+<script type="text/javascript" src="jQuery-2.2.3/jquery-2.2.3.min.js"></script>
+<script type="text/javascript" src="Bootstrap-3.3.6/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="datatables.min.js"></script>
+<script>
+	$(document).ready(function() {
+
+
+
+		var $table = $('#example').DataTable({
+			"paging": false,
+			"ordering": true,
+			"info": false,
+			columns: [
+					    {data: "Name", title: "Name"},
+					    {data: "Price", title: "Price"},
+					    {data: "Change", title: "Change"},
+					    {data: "ChangePercent", title: "Percent Change"},
+	  				 ]
+		});
+
+
+
+
+		var stocks = ["FEYE", "MSFT", "GOOGL", "AAPL"];
+		var stockData = [];
+		for(var i =  0; i < stocks.length; i++){
+			// var ajaxString = "http://dev.markitondemand.com/MODApis/Api/v2/Quote/JSON"
+			var ajaxString = "http://finance.google.com/finance/info?client=ig&q=" + stocks[i];
+			var ajaxDataString = $.ajax({
+				url: ajaxString,
+				success: function(data){
+					var jsonData = $.parseJSON(data.substring(3));
+					var stock = jsonData[0];
+					if(!(stock.cp.includes('-'))){
+						stock.cp = '+' + stock.cp;
+					}
+					var addedNode = $table.row.add({
+						"Name": stock.t,
+						"Price": "$" + stock.l,
+						"Change": stock.c,
+						"ChangePercent": stock.cp + "%",
+					}).draw();
+					$("td:contains('-')").parent().css('color', 'red');
+					$("td:contains('+')").parent().css('color', 'green');
+
+					
+				}
+			
+			});
+		
+			
+		}
+
+
+		
+		$("h1:contains('HI')").css('color', 'red');
+
+
+		setInterval(function() {
+      		
+			$table.rows().every( function () {
+			    var d = this.data();
+			 	
+
+			 	var ajaxString = "http://finance.google.com/finance/info?client=ig&q=" + d.Name;
+				var ajaxDataString = $.ajax({
+				url: ajaxString,
+				success: function(data){
+					var jsonData = $.parseJSON(data.substring(3));
+					var stock = jsonData[0];
+					if(!(stock.cp.includes('-'))){
+						stock.cp = '+' + stock.cp;
+					}
+					d.Price = '$' + stock.l;
+					d.ChangePercent = stock.cp + '%';	
+					d.Change = stock.c;			
+				}
+			
+			});
+			     // update data source for the row
+			 
+			    this.invalidate(); // invalidate the data DataTables has cached for this row
+			} );
+			 
+			// Draw once all updates are done
+			$table.draw();
+			$("td:contains('-')").parent().css('color', 'red');
+			$("td:contains('+')").parent().css('color', 'green');
+		}, 5000);
+	
+} );
+</script>
+
+
+<script>
+</script>
+</body>
+		
+
+</html>
+
